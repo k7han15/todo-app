@@ -1,91 +1,73 @@
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from './page.module.css'
+"use client";
 
-const inter = Inter({ subsets: ['latin'] })
+import { useState } from "react";
 
 export default function Home() {
+  // const val="Hello"
+  const [val, setVal] = useState("");
+  const onChangeHandler = (e: any) => {
+    // console.log("value of E", e.target.value);
+    setVal(e.target.value);
+  };
+
+  const [todos, settodos] = useState([
+    { todoText: "Add More tasks here", completed: false },
+    // { todoText: "world", completed: true },
+  ]);
+
+  const onClickHandler=(elm:any)=>{
+    // console.log("mera click",elm)
+    const newtodos=todos.map((tod)=>{
+      // console.log("tod:",tod)
+      if(tod.todoText==elm.todoText){
+        tod.completed = !tod.completed
+      }
+      return tod
+    })
+    // console.log(newtodos)
+    settodos(newtodos)
+  }
+
+  const addtodo=()=>{
+    const newtodo={todoText:val, completed:false} ;
+    const newtodos=[...todos,newtodo]
+    setVal("")
+    settodos(newtodos)
+  }
+
+  const deletetodo=(eas:any)=>{
+    const newtodo=todos.filter((elm:any)=>{
+      // console.log("e vala:",elm.todoText)
+      // console.log("todos value",eas.todoText)
+      if(elm.todoText == eas.todoText){
+        return false
+      }return true
+    })
+    // console.log("naya valatodo",newtodo)
+    settodos(newtodo)
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    <>
+      <h1 style={{textAlign:"center" }}>Todo-App</h1>
+      <input
+        type="text"
+        placeholder="Type Task..."
+        value={val}
+        onChange={onChangeHandler}
+      />
+      <button onClick={addtodo} >add</button>
+      <ul>
+        {todos.map((e) => {
+          return (
+            <li style={{ color: e.completed ? "green" : "red", listStyle:"number" }}>
+              <input type={"checkbox"} checked={e.completed} onChange={()=>{onClickHandler(e)}}/>
+              {e.todoText}
+              <button style={{marginLeft:"15px" }} onClick={()=>deletetodo(e)} >Delete</button>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
 }
